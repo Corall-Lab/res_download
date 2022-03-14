@@ -1,0 +1,23 @@
+//pluginManagement {
+//    repositories {
+//        gradlePluginPortal()
+//        google()
+//        mavenCentral()
+//    }
+//}
+//dependencyResolutionManagement {
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    ext.kotlin_version = '1.6.20-RC'
+//    repositories {
+//        google()
+//        jcenter()
+//        mavenCentral()
+//        maven { url 'https://jitpack.io' }
+//        maven { url 'https://maven.google.com' }
+//        maven { url 'https://repo1.maven.org/maven2/' }
+//    }
+//
+//}
+rootProject.name = "package"
+//include ':app'
+include ':lib'
