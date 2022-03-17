@@ -10,9 +10,6 @@ class AnchorItem : Serializable {
     @JSONField(name = "title")
     var title: String = ""
 
-    @JSONField(name = "imgUrl")
-    var iconURL: String = ""
-
     @JSONField(name = "count")
     var packageCount: Int = 0
 

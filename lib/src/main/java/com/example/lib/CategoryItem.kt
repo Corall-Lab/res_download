@@ -10,9 +10,6 @@ class CategoryItem: Serializable {
     @JSONField(name = "title")
     var title: String = ""
 
-    @JSONField(name = "imgUrl")
-    var imgUrl: String = ""
-
     @JSONField(name = "anchors")
     var anchorList: List<AnchorItem> = arrayListOf()
 }

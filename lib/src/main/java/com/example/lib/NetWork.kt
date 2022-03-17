@@ -12,18 +12,15 @@ import okhttp3.RequestBody
 import java.io.IOException
 
 object NetWork {
-    const val CATEGORY = "https://api.voiceyouth.putaotec.com/voice/category"
-    const val PACKAGE = "https://api.voiceyouth.putaotec.com/voice/package"
+    const val PACKAGE_NAME = ""
+
+    const val CATEGORY = ""
+    const val PACKAGE = ""
     val header: String =
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwMWYzYmFlMS0zYTBkLTQxNWItYmY5NS0wNTFhNmY0NDcxNjEiLCJpYXQiOiIyMDIyLzMvMTEgODo0NjoxMSIsIm5hbWVpZCI6IjQ2Mzk1NjYiLCJ0eXAiOiIxIiwibmJmIjoxNjQ2OTg4MzcxLCJleHAiOjE2NDc1OTMxNzEsImlzcyI6InRlc3RfbiIsImF1ZCI6InRlc3RfbiJ9.JUcZQf4Weh-Kg2oioUTfq_UFK7XXdZtul4U6rEyCLnY"
+        ""
     var customMaps =
-        "{\"ai\":\"963c5a7309e91344\",\"av\":\"2.1.2\",\"bundleid\":\"com.qgvoice.youth\",\"c\":\"oppo\",\"ci\":\"0ecc837c6078ca52b600f71fd660e70d\",\"imei\":\"\",\"ln\":\"zh_CN_#Hans\",\"mac\":\"B8:C3:85:7C:06:4C\",\"mt\":\"POT-AL00a\",\"n\":\"魔音变声器青春版\",\"ns\":1,\"oaid\":\"9ff767ff-0bff-9782-be7d-7efdd7bcf89f\",\"pid\":\"1\",\"sign\":\"5A:D0:73:CC:6C:B4:5F:EA:38:88:24:40:A9:BF:7B:68:DF:7F:CB:8F\",\"sng\":\"qwejuishkjadoqkklansh\",\"sv\":\"10\",\"ts\":1646991511}"
+        ""
     const val CODE_SUCCESS = 200
-
-    @JvmStatic
-    fun main(args: Array<String>) {
-
-    }
 
     @JvmStatic
     fun requestWithToken(url: String, jsonStr: String, callback: NetworkCallback) {
@@ -35,7 +32,7 @@ object NetWork {
             .url(url)
             .addHeader("Authorization", header)
             .addHeader("vapi", "1")
-            .addHeader("pkg", "com.qgvoice.youth")
+            .addHeader("pkg", PACKAGE_NAME)
             .post(body).build()
         val call = okHttpClient.newCall(request)
         try {
@@ -71,7 +68,7 @@ object NetWork {
         } else {
             stringBuilder.append("?av=").append("2.1.2")
         }
-        stringBuilder.append("&bundleid=").append("com.qgvoice.youth")
+        stringBuilder.append("&bundleid=").append(PACKAGE_NAME)
         stringBuilder.append("&c=").append("oppo")
         return stringBuilder.toString()
     }

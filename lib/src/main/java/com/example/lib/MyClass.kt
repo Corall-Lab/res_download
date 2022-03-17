@@ -3,6 +3,13 @@ package com.example.lib
 import com.example.lib.NetWork.requestWithToken
 import kotlin.jvm.JvmStatic
 import com.alibaba.fastjson.JSON
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.io.BufferedOutputStream
+import java.io.FileOutputStream
+import java.net.URI
 import java.net.URL
 import java.util.HashMap
 
@@ -33,7 +40,6 @@ object MyClass {
                             val newCategoryItem = CategoryItem()
                             newCategoryItem.id = originCategory.id
                             newCategoryItem.title = originCategory.title
-                            newCategoryItem.imgUrl = originCategory.imgUrl
                             newCategoryItem.anchorList = list
                             newCategoryList.add(newCategoryItem)
                         }
@@ -71,13 +77,20 @@ object MyClass {
                         override fun callback(list: List<PackageItem>) {
                             val newAnchorItem = AnchorItem()
                             newAnchorItem.title = originAnchor.title
-                            newAnchorItem.id = originAnchor.id
+                            newAnchorItem.id = "$categoryId${originAnchor.id}".toInt()
                             newAnchorItem.packageList = list
-                            // TODO: 下载图片
-                            newAnchorItem.iconURL = "${originAnchor.id}.jpg"
+                            val fileName = "$categoryId${originAnchor.id}.${URL(originAnchor.iconURL).file.split(".").last()}"
+                            // 下载图片
+                            GlobalScope.launch(Dispatchers.IO) {
+                                val connect = URL(originAnchor.iconURL).openConnection()
+                                connect.connect()
+                                connect.getInputStream().use { input ->
+                                    BufferedOutputStream(FileOutputStream("$dir/$categoryId/$fileName")).use { output ->
+                                        input.copyTo(output) //将文件复制到本地 其中copyTo使用方法可参考我的Io流笔记
+                                    }
+                                }
+                            }
                             newAnchorList.add(newAnchorItem)
-
-
                             callback.callback(newAnchorList)
                         }
                     })
@@ -91,7 +104,6 @@ object MyClass {
 
     fun requestPackageList(categoryId: Int, originAnchor: OriginAnchorItem, callback: ArrayListCallback<PackageItem>) {
         val anchorId = originAnchor.id
-        val anchorName = originAnchor.title
         val paramMap: MutableMap<String, Any> = HashMap()
         paramMap["lid"] = packageLastId;
         paramMap["cid"] = anchorId;
@@ -116,16 +128,27 @@ object MyClass {
         for (i: Int in 1..list.size) {
             val packageItem = list[i - 1]
             val packageTitle = packageItem.title
-            val localUrl = "${categoryId}_${anchorId}_$i.mp3"
+            val fileName = "${categoryId}${anchorId}$i.${URL(packageItem.sourceUrl).file.split(".").last()}"
             val newItem = PackageItem()
-            newItem.id = i
+            newItem.id = "${categoryId}${anchorId}$i".toInt()
             newItem.title = packageTitle
-            newItem.sourceUrl = localUrl
             newItem.playTime = packageItem.playTime
             newItem.fileSize = packageItem.fileSize
             packageItemsList.add(newItem)
-            // TODO: 下载mp3
-            FileTool.writeFile("$path/$localUrl", packageItem.sourceUrl)
+            // 下载mp3
+            GlobalScope.launch(Dispatchers.IO) {
+                print("===== download ${path}/${fileName}\n")
+                FileTool.createOrExistDir(path)
+                val connect = URL(packageItem.sourceUrl).openConnection()
+                connect.connect()
+                connect.getInputStream().use { input ->
+                    BufferedOutputStream(FileOutputStream("$path/$fileName")).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+            }
+
+//            FileTool.writeFile("$path/$fileName", packageItem.sourceUrl)
         }
         return packageItemsList
     }

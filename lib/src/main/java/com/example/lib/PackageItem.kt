@@ -10,9 +10,6 @@ class PackageItem: Serializable {
     @JSONField(name = "title")
     var title: String = ""
 
-    @JSONField(name = "sourceUrl")
-    var sourceUrl: String = ""
-
     @JSONField(name = "size")
     var fileSize: String = ""
 
